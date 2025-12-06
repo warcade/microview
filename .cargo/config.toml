@@ -1,0 +1,16 @@
+[build]
+target = "x86_64-pc-windows-msvc"
+
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+    "-C", "debuginfo=0",
+    "-C", "link-arg=/ENTRY:mainCRTStartup",
+    "-C", "link-arg=/SUBSYSTEM:WINDOWS",
+    "-C", "link-arg=/OPT:REF,ICF",
+    "-C", "link-arg=/MERGE:.rdata=.text",
+    "-C", "link-arg=/MERGE:.pdata=.text",
+    "-C", "link-arg=/MERGE:.data=.text",
+    "-C", "link-arg=/MERGE:.bss=.text",
+    "-C", "link-arg=/ALIGN:16",
+    "-C", "link-arg=/FILEALIGN:1",
+]
