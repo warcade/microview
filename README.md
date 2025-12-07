@@ -1,41 +1,44 @@
 # microview
 
-A fully functional WebView2 browser in **2,960 bytes** (2.89 KB).
+A fully functional WebView2 browser in as little as **2,576 bytes** (2.51 KB).
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Chrome (430 MB)                                             │
-│ █████████████████████████████████████████████████████████   │
-│                                                             │
-│ microview.exe (2.89 KB)                                     │
-│ (less than 1 pixel at this scale)                           │
-└─────────────────────────────────────────────────────────────┘
-
-Chrome is 145,000x larger.
+┌──────────────────────────────────────────────────────────────┐
+│ Chrome (430 MB)    ██████████████████████████████████████████│
+│ Brave (400 MB)     ███████████████████████████████████████   │
+│ Edge (370 MB)      ████████████████████████████████████      │
+│ Firefox (250 MB)   ████████████████████████                  │
+│ Electron (150 MB)  ██████████████                            │
+│ Tauri (3 MB)       ▏                                        │
+│ microview (2.5 KB) ▏ (less than 1 pixel at this scale)      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## What is this?
 
-A Windows executable that opens a fully functional Chromium-based browser window. It loads a webpage, handles window resizing, and works exactly like any Electron/Tauri app - but in under 3 KB.
+A Windows executable that opens a fully functional Chromium-based browser window. It loads a webpage and works exactly like any Electron/Tauri app - but in just 2.51 KB.
 
 This works because Windows 10/11 ships with the WebView2 runtime (the Edge browser engine). We just create a window and ask WebView2 to render in it.
 
 ## Quick Start
 
 ```rust
-// main.rs
-let wv = WebView::new(800, 600);
-wv.navigate(&url(b"https://google.com\0"));
-wv.run();
+// main.rs - that's it, one line!
+webview::go(800, 600, b"https://google.com\0");
 ```
+
+## Download
+
+Grab the pre-built binary from [Releases](https://github.com/warcade/microview/releases) and run it. No installation needed.
 
 ## Build
 
-Requires Rust nightly and Windows:
+Requires Rust and Windows:
 
 ```powershell
-rustup install nightly
-cargo +nightly build --release
+git clone https://github.com/warcade/microview.git
+cd microview
+cargo build --release
 ```
 
 The executable will be at `target/x86_64-pc-windows-msvc/release/microview.exe`
@@ -98,8 +101,8 @@ If WebView2 isn't installed, it crashes. This saves hundreds of bytes of error h
 ```
 microview/
 ├── src/
-│   ├── main.rs      # Entry point (30 lines)
-│   └── webview.rs   # WebView2 wrapper (160 lines)
+│   ├── main.rs      # Entry point (12 lines)
+│   └── webview.rs   # WebView2 wrapper (115 lines)
 ├── .cargo/
 │   └── config.toml  # Linker flags
 ├── Cargo.toml
@@ -108,41 +111,12 @@ microview/
 
 ## API
 
-### `WebView::new(width: i32, height: i32) -> WebView`
+### `webview::go(width: i32, height: i32, url: &[u8])`
 
-Creates a window and initializes WebView2.
-
-### `webview.navigate(&url)`
-
-Navigates to a URL. The URL must be UTF-16 encoded. Use the `url()` helper:
+Creates a window, initializes WebView2, navigates to the URL, and runs the message loop. Blocks until the window is closed. The URL must be ASCII with a null terminator.
 
 ```rust
-static URL: [u16; 23] = url(b"https://example.com\0");
-wv.navigate(&URL);
-```
-
-### `webview.run()`
-
-Runs the message loop. Blocks until the window is closed.
-
-## URL Helper
-
-WebView2's `Navigate` function requires UTF-16 strings. We provide a compile-time converter:
-
-```rust
-/// Converts ASCII to UTF-16 at compile time
-const fn url<const N: usize>(s: &[u8; N]) -> [u16; N] {
-    let mut out = [0u16; N];
-    let mut i = 0;
-    while i < N - 1 {
-        out[i] = s[i] as u16;
-        i += 1;
-    }
-    out
-}
-
-// Usage - the \0 is required for null termination
-static URL: [u16; 24] = url(b"https://github.com\0");
+webview::go(800, 600, b"https://github.com\0");
 ```
 
 ## Size Breakdown
@@ -157,30 +131,49 @@ static URL: [u16; 24] = url(b"https://github.com\0");
 | WebView2 init + navigation | ~600 |
 | Message loop | ~200 |
 | URL data | ~50 |
-| **Total** | **2,960** |
+| **Total** | **~2,576** |
 
 ## Comparison
 
-| Browser | Size |
-|---------|------|
-| Chrome | 430 MB |
-| Firefox | 250 MB |
-| Electron app (empty) | 150 MB |
-| Tauri app (empty) | 3 MB |
-| **microview** | **2.89 KB** |
+### Browsers
+
+| Browser | Size | vs microview |
+|---------|------|--------------|
+| Chrome | 430 MB | 148,000x larger |
+| Brave | 400 MB | 138,000x larger |
+| Edge | 370 MB | 128,000x larger |
+| Firefox | 250 MB | 86,000x larger |
+| Opera | 240 MB | 83,000x larger |
+| Vivaldi | 290 MB | 100,000x larger |
+| **microview** | **2.51 KB** | **1x** |
+
+### App Frameworks (empty "Hello World" app)
+
+| Framework | Size | vs microview |
+|-----------|------|--------------|
+| Electron | 150 MB | 52,000x larger |
+| NW.js | 120 MB | 41,000x larger |
+| CEF (C++) | 100 MB | 34,000x larger |
+| Qt WebEngine | 60 MB | 21,000x larger |
+| Flutter | 25 MB | 8,600x larger |
+| Neutralino | 3 MB | 1,000x larger |
+| Tauri | 3 MB | 1,000x larger |
+| Wails | 8 MB | 2,800x larger |
+| **microview** | **2.51 KB** | **1x** |
 
 ## Requirements
 
 - Windows 10/11 (WebView2 runtime pre-installed)
 - x64 architecture
-- Rust nightly toolchain
+- Rust toolchain
 
 ## Limitations
 
 - Windows only
 - No error handling - crashes if WebView2 unavailable
 - Single window only (uses global state)
-- ASCII URLs only (use `url()` helper)
+- ASCII URLs only (max 64 chars)
+- WebView doesn't resize with window (fixed initial size)
 
 ## License
 

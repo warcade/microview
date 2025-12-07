@@ -13,4 +13,9 @@ rustflags = [
     "-C", "link-arg=/MERGE:.bss=.text",
     "-C", "link-arg=/ALIGN:16",
     "-C", "link-arg=/FILEALIGN:1",
+    "-C", "link-arg=/DYNAMICBASE:NO",
+    "-C", "link-arg=/NXCOMPAT:NO",
+    "-C", "link-arg=/HIGHENTROPYVA:NO",
+    "-C", "link-arg=/EMITPOGOPHASEINFO",
+    "-C", "link-arg=/NOCOFFGRPINFO",
 ]
