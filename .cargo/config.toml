@@ -1,7 +1,7 @@
 [build]
-target = "x86_64-pc-windows-msvc"
+target = "i686-pc-windows-msvc"
 
-[target.x86_64-pc-windows-msvc]
+[target.i686-pc-windows-msvc]
 rustflags = [
     "-C", "debuginfo=0",
     "-C", "link-arg=/ENTRY:mainCRTStartup",
