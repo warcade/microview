@@ -139,12 +139,15 @@ webview::go(800, 600, b"https://github.com\0");
 
 | Browser | Size | vs microview |
 |---------|------|--------------|
-| Chrome | 430 MB | 148,000x larger |
-| Brave | 400 MB | 138,000x larger |
-| Edge | 370 MB | 128,000x larger |
-| Firefox | 250 MB | 86,000x larger |
-| Opera | 240 MB | 83,000x larger |
-| Vivaldi | 290 MB | 100,000x larger |
+| Chrome | 430 MB | 175,000x larger |
+| Brave | 400 MB | 163,000x larger |
+| Edge | 370 MB | 151,000x larger |
+| Vivaldi | 290 MB | 118,000x larger |
+| Firefox | 250 MB | 102,000x larger |
+| Opera | 240 MB | 98,000x larger |
+| NetSurf | 16 MB | 6,500x larger |
+| Dillo | 1.5 MB | 612x larger |
+| Tiny Browser | 200 KB | 80x larger |
 | **microview** | **2.51 KB** | **1x** |
 
 ### App Frameworks (empty "Hello World" app)
